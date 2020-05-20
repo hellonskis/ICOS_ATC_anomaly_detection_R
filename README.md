@@ -1,7 +1,6 @@
 # ICOS_ATC_anomaly_detection
 
-# The R code in the file OPE_2011-2020 can be used for extracting 
-# synoptic scale and seasonal anomalies from ICOS CO2 time series. 
+# The R code in the file OPE_2011-2020 can be used for extracting synoptic scale and seasonal anomalies from ICOS CO2 time series. 
 # OPE is used as an example, but any ICOS station can be used provided 
 # the user has downloaded the historical data from the ICOS carbon portal 
 # and the NRT growing data for the past year. The code will concatenate 
