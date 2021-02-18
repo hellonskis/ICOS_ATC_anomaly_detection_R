@@ -14,8 +14,8 @@ site = "OPE"
   L2_df <- readRDS('OPE_2011-2020_co2_120m.rds')
   L2_df$sampling_datetime <- as.POSIXct(L2_df$sampling_datetime, format="%Y-%m-%d %H:%M:%OS", tz="GMT")
   L2_df <- L2_df[L2_df$sampling_datetime >= "2019-05-01",]
-  
   L2_df <- L2_df[,c(1,2)]
+
   hist_co2 <- rbind(hist_df, L2_df)
   rm(hist_df, L2_df)
   
