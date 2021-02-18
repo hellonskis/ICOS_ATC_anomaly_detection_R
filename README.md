@@ -4,4 +4,4 @@
 
 # The delta-C values are then used to defined "envelopes" around the CCGvu harmonic curve.  These are defined at each time step (days, in the example) as the standard deviation of all delta-C values within 90 (+45/-45) days of the current calendar date over all years in the record (9, in the example). A smooth curve is then fit to the daily data, and any segment where the smooth curve is outside the sigma envelope is considered to be a measurement anomaly.
 
-# This procedure is repeated three times - at 15, 30 and 90 days. For the 15- and 30-day curves, anomalies are considered to represent synoptic scale events.  For the 90-day curve, they are considered to represent seasonal anomalies.  Note that the name of the station, the dates, and the paths must be changed from those in the example.
+# This procedure is performed at 30 and 90 days. For the 30-day curve, anomalies are considered to represent synoptic scale events.  For the 90-day curve, they are considered to represent seasonal anomalies.  Note that the name of the station, the dates, and the paths must be changed from those in the example.
