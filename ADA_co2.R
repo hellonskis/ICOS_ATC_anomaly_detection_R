@@ -5,7 +5,7 @@ source("C:/Users/aresovsk/Documents/R/main.R")
 
 
 ## 1. Read in the 2011-2020 data and subset dates
-  OPE_co2_2011_2019 <- readRDS('C:/Users/aresovsk/ICOS_data/hourly/OPE_2011-2019_co2_120m.rds')
+  OPE_co2_2011_2019 <- readRDS('OPE_2011-2019_co2_120m.rds')
   OPE_co2_2011_2019$sampling_datetime <- as.POSIXct(OPE_co2_2011_2019$sampling_datetime, format="%Y-%m-%d %H:%M:%OS", tz="GMT")
   OPE_co2_2011_2019 <- OPE_co2_2011_2019[OPE_co2_2011_2019$sampling_datetime < "2019-05-01",]
   OPE_co2_2011_2019 <- OPE_co2_2011_2019[,c(11,13)]
