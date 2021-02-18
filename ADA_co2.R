@@ -31,7 +31,7 @@ source("C:/Users/aresovsk/Documents/R/main.R")
 
 
 ## 2. Read in NRT data
-  OPE_co2_NRT <- read.xlsx('C:/Users/aresovsk/ICOS_data/ICOS_NRT_growing_20200928/ICOS_ATC_NRT_OPE_2020-06-01_2020-09-27_120.0_CO2.xlsx',
+  OPE_co2_NRT <- read.xlsx('ICOS_ATC_NRT_OPE_2020-06-01_2020-09-27_120.0_CO2.xlsx',
                            sheetIndex = "hourly", header=TRUE)
   OPE_co2_NRT$sampling_datetime <- as.POSIXct(OPE_co2_NRT$sampling_datetime, format="%Y-%m-%d %H:%M:%OS", tz="GMT")
   OPE_co2_NRT <- OPE_co2_NRT[,c(1,2)]
