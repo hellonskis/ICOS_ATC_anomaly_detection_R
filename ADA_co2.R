@@ -181,33 +181,59 @@ source("C:/Users/aresovsk/Documents/R/main.R")
   }   
 
 
-## 9: Seasonal anomaly plot
+## 9: Anomaly plots
+  
+  # Seasonal anomaly plot
+  # Show only growing season
   OPE_90d_smco2.copy <- OPE_90d_smoothed_co2
   OPE_90d_smco2.copy$winter <- NA
   OPE_90d_smco2.copy <- Extract_summer(OPE_90d_smco2.copy)
 
+  # Set x-axis parameters
+  x=seq(as.Date("2012-01-01"), as.Date("2021-01-01"), by="years",)
+  labels=date_format("%Y")(x)
+  breaks=as.POSIXct(sort(x))
+
   ggplot() +
-    geom_line(data=OPE_90d_smoothed_co2, aes(x=sampling_datetime, y=no_anom)) +
-    geom_line(data=OPE_90d_smoothed_co2, aes(x=sampling_datetime, y=pos_SA, color="coral1")) +
-    geom_line(data=OPE_90d_smoothed_co2, aes(x=sampling_datetime, y=neg_SA, color="turquoise3")) +
-    scale_y_continuous(limits=c(-2,3.5)) +
+    geom_line(data=OPE_90d_smco2.copy, aes(x=sampling_datetime, y=no_anom)) +
+    geom_line(data=OPE_90d_smco2.copy, aes(x=sampling_datetime, y=pos_SA, color="coral1")) +
+    geom_line(data=OPE_90d_smco2.copy, aes(x=sampling_datetime, y=neg_SA, color="turquoise3")) +
+    geom_line(data=OPE_90d_smco2.copy, aes(x=sampling_datetime, y=winter), linetype="dotted") +
+    scale_x_datetime(limits=range(breaks), labels = labels, breaks = breaks) +
+    scale_y_continuous(limits=c(-3.0, 4.6), sec.axis = sec_axis( ~ .*1/2)) +
     theme_bw() +
-    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
-    theme(legend.title=element_blank(),legend.position="none") +
-    theme(axis.title.x = element_blank()) +
-    theme(axis.title.y = element_blank()) +
-    theme(plot.title = element_text(hjust = 0.99, vjust = -3, size = 12, margin=margin(-7,0,-7,0))) + labs(title="OPE")
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
+          panel.background = element_rect(fill = "transparent", color = NA),
+          plot.background = element_rect(fill = "transparent",color = NA),
+          legend.title=element_blank(),legend.position="none",
+          axis.title.x = element_blank(),
+          axis.title.y = element_blank(),
+          plot.title = element_text(hjust = 0.98, vjust = -14.1, size = 9, margin=margin(-7,0,-7,0))) + labs(title="OPE")
   
+  # Synoptic anomaly plot
+  # Show only extended winter season
+  OPE_30d_smco2.copy <- OPE_30d_smoothed_co2
+  OPE_30d_smco2.copy$summer <- NA
+  OPE_30d_smco2.copy <- Extract_winter(OPE_30d_smco2.copy)
+  
+  # Set x-axis parameters
+  x=seq(as.Date("2012-01-01"), as.Date("2021-01-01"), by="years",)
+  labels=date_format("%Y")(x)
+  breaks=as.POSIXct(sort(x))
+
   ggplot() +
-    geom_line(data=OPE_30d_smoothed_co2, aes(x=sampling_datetime, y=no_anom)) +
-    geom_line(data=OPE_30d_smoothed_co2, aes(x=sampling_datetime, y=pos_SA, color="coral1")) +
-    geom_line(data=OPE_30d_smoothed_co2, aes(x=sampling_datetime, y=neg_SA, color="turquoise3")) +
-    scale_y_continuous(limits=c(-2,3.5)) +
+    geom_line(data=OPE_30d_smco2.copy, aes(x=sampling_datetime, y=no_anom)) +
+    geom_line(data=OPE_30d_smco2.copy, aes(x=sampling_datetime, y=pos_SA, color="coral1")) +
+    geom_line(data=OPE_30d_smco2.copy, aes(x=sampling_datetime, y=neg_SA, color="turquoise3")) +
+    geom_line(data=OPE_30d_smco2.copy, aes(x=sampling_datetime, y=summer), linetype="dotted") +
+    scale_x_datetime(limits=range(breaks), labels = labels, breaks = breaks) +
+    scale_y_continuous(limits=c(-3.0, 4.6), sec.axis = sec_axis( ~ .*1/2)) +
     theme_bw() +
-    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
-    theme(legend.title=element_blank(),legend.position="none") +
-    theme(axis.title.x = element_blank()) +
-    theme(axis.title.y = element_blank()) +
-    theme(plot.title = element_text(hjust = 0.99, vjust = -3, size = 12, margin=margin(-7,0,-7,0))) + labs(title="OPE")
-  
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
+          panel.background = element_rect(fill = "transparent", color = NA),
+          plot.background = element_rect(fill = "transparent",color = NA),
+          legend.title=element_blank(),legend.position="none",
+          axis.title.x = element_blank(),
+          axis.title.y = element_blank(),
+          plot.title = element_text(hjust = 0.98, vjust = -14.1, size = 9, margin=margin(-7,0,-7,0))) + labs(title="OPE")
   
