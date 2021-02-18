@@ -30,7 +30,6 @@ source("C:/Users/aresovsk/Documents/R/main.R")
   OPE_co2_2011_2020 <- df
 
 
-
 ## 2. Read in NRT data
   OPE_co2_NRT <- read.xlsx('C:/Users/aresovsk/ICOS_data/ICOS_NRT_growing_20200928/ICOS_ATC_NRT_OPE_2020-06-01_2020-09-27_120.0_CO2.xlsx',
                            sheetIndex = "hourly", header=TRUE)
@@ -56,8 +55,9 @@ source("C:/Users/aresovsk/Documents/R/main.R")
   OPE_co2_all <- subset(OPE_co2_all, (hour(as.POSIXct(OPE_co2_all$sampling_datetime)) >= 12) & 
                                      (hour(as.POSIXct(OPE_co2_all$sampling_datetime)) <= 17)) # or
   ## Use only nighttime values
-#  OPE_co2_all <- subset(OPE_co2_all, (hour(as.POSIXct(OPE_co2_all$sampling_datetime)) >= 20) | 
-#                                     (hour(as.POSIXct(OPE_co2_all$sampling_datetime)) <= 5))
+  #OPE_co2_all <- subset(OPE_co2_all, (hour(as.POSIXct(OPE_co2_all$sampling_datetime)) >= 20) | 
+  #                                   (hour(as.POSIXct(OPE_co2_all$sampling_datetime)) <= 5))
+
 
 ## 3. Aggregate hourly to daily
   OPE_co2_all$Date  <- as.Date(OPE_co2_all$sampling_datetime, "%Y-%m-%d", tz="GMT")
@@ -79,13 +79,10 @@ source("C:/Users/aresovsk/Documents/R/main.R")
                              ccgcrvParameters="-all -short\ 90", merge=FALSE, colNames=colNames)
   ccgvu_30d_OPE_co2 <- getCcgcrv(OPE_co2_daily, "sampling_datetime", "concentration", 
                              ccgcrvParameters="-all -short\ 30", merge=FALSE, colNames=colNames)
-  ccgvu_15d_OPE_co2 <- getCcgcrv(OPE_co2_daily, "sampling_datetime", "concentration", 
-                             ccgcrvParameters="-all -short\ 15", merge=FALSE, colNames=colNames)
   
   ## Round dates
   ccgvu_90d_OPE_co2$sampling_datetime <- round_date(ccgvu_90d_OPE_co2$sampling_datetime, unit = "day")
   ccgvu_30d_OPE_co2$sampling_datetime <- round_date(ccgvu_30d_OPE_co2$sampling_datetime, unit = "day")
-  ccgvu_15d_OPE_co2$sampling_datetime <- round_date(ccgvu_15d_OPE_co2$sampling_datetime, unit = "day")
 
 
 ## 5. Calculate delta-C values
@@ -98,15 +95,11 @@ source("C:/Users/aresovsk/Documents/R/main.R")
   for (i in 1:nrow(ccgvu_30d_OPE_co2)) {
     ccgvu_30d_OPE_co2$dC[i] <- ccgvu_30d_OPE_co2$smcycle[i] - ccgvu_30d_OPE_co2$harm[i]
   } 
-  #for (i in 1:nrow(ccgvu_15d_OPE_co2)) {
-  #  ccgvu_15d_OPE_co2$dC[i] <- ccgvu_15d_OPE_co2$smcycle[i] - ccgvu_15d_OPE_co2$harm[i]
-  #} 
 
 
 ## 6. Calculate season-adjusted sigma values 
   ccgvu_90d_OPE_co2$sd <- seasonal_sigma(ccgvu_90d_OPE_co2, ndays=(nrow(ccgvu_90d_OPE_co2)-1))
   ccgvu_30d_OPE_co2$sd <- seasonal_sigma(ccgvu_30d_OPE_co2, ndays=(nrow(ccgvu_30d_OPE_co2)-1))
-  #ccgvu_15d_OPE_co2$sd <- seasonal_sigma(ccgvu_15d_OPE_co2, ndays=(nrow(ccgvu_15d_OPE_co2)-1))
   
 #  # Use 2*sd ? 
   for (i in 1:nrow(ccgvu_90d_OPE_co2)) {
@@ -115,30 +108,21 @@ source("C:/Users/aresovsk/Documents/R/main.R")
   for (i in 1:nrow(ccgvu_30d_OPE_co2)) {
     ccgvu_30d_OPE_co2$sd[i] <- ccgvu_30d_OPE_co2$sd[i] * 2
   }
-  #for (i in 1:nrow(ccgvu_15d_OPE_co2)) {
-  #  ccgvu_15d_OPE_co2$sd[i] <- ccgvu_15d_OPE_co2$sd[i] * 2
-  #}
   
   ccgvu_90d_OPE_co2$plus.sigma <- NA
   ccgvu_90d_OPE_co2$minus.sigma <- NA
   ccgvu_30d_OPE_co2$plus.sigma <- NA
   ccgvu_30d_OPE_co2$minus.sigma <- NA
-  #ccgvu_15d_OPE_co2$plus.sigma <- NA
-  #ccgvu_15d_OPE_co2$minus.sigma <- NA
   for (i in 1:nrow(ccgvu_90d_OPE_co2)) {
     ccgvu_90d_OPE_co2$plus.sigma[i]  <- ccgvu_90d_OPE_co2$harm[i] + ccgvu_90d_OPE_co2$trend[i] + ccgvu_90d_OPE_co2$sd[i]
     ccgvu_90d_OPE_co2$minus.sigma[i] <- ccgvu_90d_OPE_co2$harm[i] + ccgvu_90d_OPE_co2$trend[i] - ccgvu_90d_OPE_co2$sd[i]
     ccgvu_30d_OPE_co2$plus.sigma[i] <- ccgvu_30d_OPE_co2$harm[i] + ccgvu_30d_OPE_co2$trend[i] + ccgvu_30d_OPE_co2$sd[i]
     ccgvu_30d_OPE_co2$minus.sigma[i] <- ccgvu_30d_OPE_co2$harm[i] + ccgvu_30d_OPE_co2$trend[i] - ccgvu_30d_OPE_co2$sd[i]
-  #  ccgvu_15d_OPE_co2$plus.sigma[i] <- ccgvu_15d_OPE_co2$harm[i] + ccgvu_15d_OPE_co2$trend[i] + ccgvu_15d_OPE_co2$sd[i]
-  #  ccgvu_15d_OPE_co2$minus.sigma[i] <- ccgvu_15d_OPE_co2$harm[i] + ccgvu_15d_OPE_co2$trend[i] - ccgvu_15d_OPE_co2$sd[i]
   }
 
   ## Make smoothed curves
   OPE_90d_smoothed_co2 <- loess.sm(ccgvu_90d_OPE_co2, "sampling_datetime", "orig", span=(90/nrow(ccgvu_90d_OPE_co2)))
   OPE_30d_smoothed_co2 <- loess.sm(ccgvu_30d_OPE_co2, "sampling_datetime", "orig", span=(30/nrow(ccgvu_30d_OPE_co2)))
-  #OPE_15d_smoothed_co2 <- loess.sm(ccgvu_15d_OPE_co2, "sampling_datetime", "orig", span=(15/nrow(ccgvu_15d_OPE_co2)))
-
   
   
 ## 7. Identify seasonal anomalies 
@@ -174,23 +158,6 @@ source("C:/Users/aresovsk/Documents/R/main.R")
       OPE_30d_smoothed_co2$no_anom[i] <- 0
     }
   }
-  #OPE_15d_smoothed_co2$no_anom <- NA
-  #OPE_15d_smoothed_co2$pos_SA <- NA
-  #OPE_15d_smoothed_co2$neg_SA <- NA
-  #OPE_15d_smoothed_co2$SSE <- NA
-  #for (i in 2:(nrow(OPE_15d_smoothed_co2)-1)) {
-  #  if (((OPE_15d_smoothed_co2$smoothed[i] >= ccgvu_15d_OPE_co2$plus.sigma[i]) & (OPE_15d_smoothed_co2$smoothed[i-1] >= ccgvu_15d_OPE_co2$plus.sigma[i-1])) |
-  #     ((OPE_15d_smoothed_co2$smoothed[i] >= ccgvu_15d_OPE_co2$plus.sigma[i]) & (OPE_15d_smoothed_co2$smoothed[i+1] >= ccgvu_15d_OPE_co2$plus.sigma[i+1]))) {
-  #    OPE_15d_smoothed_co2$pos_SA[i] <- OPE_15d_smoothed_co2$smoothed[i] - ccgvu_15d_OPE_co2$plus.sigma[i] 
-  #    OPE_15d_smoothed_co2$SSE[i] <- OPE_15d_smoothed_co2$smoothed[i]
-  #  } else if (((OPE_15d_smoothed_co2$smoothed[i] <= ccgvu_15d_OPE_co2$minus.sigma[i]) & (OPE_15d_smoothed_co2$smoothed[i-1] <= ccgvu_15d_OPE_co2$minus.sigma[i-1])) |
-  #            ((OPE_15d_smoothed_co2$smoothed[i] <= ccgvu_15d_OPE_co2$minus.sigma[i]) & (OPE_15d_smoothed_co2$smoothed[i+1] <= ccgvu_15d_OPE_co2$minus.sigma[i+1]))) {
-  #    OPE_15d_smoothed_co2$neg_SA[i] <- OPE_15d_smoothed_co2$smoothed[i] - ccgvu_15d_OPE_co2$minus.sigma[i]
-  #    OPE_15d_smoothed_co2$SSE[i] <- OPE_15d_smoothed_co2$smoothed[i]
-  #  } else {
-  #    OPE_15d_smoothed_co2$no_anom[i] <- 0
-  #  }
-  #}
   
   
   # Make the plots look a bit nicer:
@@ -212,29 +179,13 @@ source("C:/Users/aresovsk/Documents/R/main.R")
         OPE_30d_smoothed_co2$neg_SA[i] = 0 
     } 
   }   
-  #for (i in 2:nrow(OPE_15d_smoothed_co2)) {
-  #  if ((is.na(OPE_15d_smoothed_co2$pos_SA[i]) & is.na(OPE_15d_smoothed_co2$no_anom[i+1]) & is.na(OPE_15d_smoothed_co2$neg_SA[i+1])) | 
-  #      (is.na(OPE_15d_smoothed_co2$pos_SA[i]) & is.na(OPE_15d_smoothed_co2$no_anom[i-1]) & is.na(OPE_15d_smoothed_co2$neg_SA[i-1]))) {
-  #    OPE_15d_smoothed_co2$pos_SA[i] = 0
-  #  } else if ((is.na(OPE_15d_smoothed_co2$neg_SA[i]) & is.na(OPE_15d_smoothed_co2$no_anom[i+1]) & is.na(OPE_15d_smoothed_co2$pos_SA[i+1])) |  
-  #             (is.na(OPE_15d_smoothed_co2$neg_SA[i]) & is.na(OPE_15d_smoothed_co2$no_anom[i-1]) & is.na(OPE_15d_smoothed_co2$pos_SA[i-1]))) {
-  #      OPE_15d_smoothed_co2$neg_SA[i] = 0 
-  #  } 
-  #}
-  
-  
-## 8: Filter out false positives
-  OPE_15d_smoothed_co2 <- fp_filter_OPE_co2(OPE_15d_smoothed_co2)
-  OPE_15d_smoothed_co2$local <- NA
-  OPE_15d_smoothed_co2$local[2921:2925] <- OPE_15d_smoothed_co2$neg_SA[2921:2925]
-  OPE_15d_smoothed_co2$fp[3137:3139] <- FALSE
-  
-  OPE_30d_smoothed_co2 <- fp_filter_OPE_co2(OPE_30d_smoothed_co2)
-  OPE_30d_smoothed_co2$local <- NA
-  OPE_30d_smoothed_co2$fp[3137:3142] <- FALSE
 
 
 ## 9: Seasonal anomaly plot
+  OPE_90d_smco2.copy <- OPE_90d_smoothed_co2
+  OPE_90d_smco2.copy$winter <- NA
+  OPE_90d_smco2.copy <- Extract_summer(OPE_90d_smco2.copy)
+
   ggplot() +
     geom_line(data=OPE_90d_smoothed_co2, aes(x=sampling_datetime, y=no_anom)) +
     geom_line(data=OPE_90d_smoothed_co2, aes(x=sampling_datetime, y=pos_SA, color="coral1")) +
@@ -251,18 +202,6 @@ source("C:/Users/aresovsk/Documents/R/main.R")
     geom_line(data=OPE_30d_smoothed_co2, aes(x=sampling_datetime, y=no_anom)) +
     geom_line(data=OPE_30d_smoothed_co2, aes(x=sampling_datetime, y=pos_SA, color="coral1")) +
     geom_line(data=OPE_30d_smoothed_co2, aes(x=sampling_datetime, y=neg_SA, color="turquoise3")) +
-    scale_y_continuous(limits=c(-2,3.5)) +
-    theme_bw() +
-    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
-    theme(legend.title=element_blank(),legend.position="none") +
-    theme(axis.title.x = element_blank()) +
-    theme(axis.title.y = element_blank()) +
-    theme(plot.title = element_text(hjust = 0.99, vjust = -3, size = 12, margin=margin(-7,0,-7,0))) + labs(title="OPE")
-  
-  ggplot() +
-    geom_line(data=OPE_15d_smoothed_co2, aes(x=sampling_datetime, y=no_anom)) +
-    geom_line(data=OPE_15d_smoothed_co2, aes(x=sampling_datetime, y=pos_SA, color="coral1")) +
-    geom_line(data=OPE_15d_smoothed_co2, aes(x=sampling_datetime, y=neg_SA, color="turquoise3")) +
     scale_y_continuous(limits=c(-2,3.5)) +
     theme_bw() +
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
