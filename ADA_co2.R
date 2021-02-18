@@ -9,7 +9,7 @@ source("C:/Users/aresovsk/Documents/R/main.R")
   OPE_co2_2011_2019$sampling_datetime <- as.POSIXct(OPE_co2_2011_2019$sampling_datetime, format="%Y-%m-%d %H:%M:%OS", tz="GMT")
   OPE_co2_2011_2019 <- OPE_co2_2011_2019[OPE_co2_2011_2019$sampling_datetime < "2019-05-01",]
   OPE_co2_2011_2019 <- OPE_co2_2011_2019[,c(11,13)]
-  OPE_co2_newL2 <- readRDS('C:/Users/aresovsk/ICOS_data/hourly/OPE_2011-2020_co2_120m.rds')
+  OPE_co2_newL2 <- readRDS('OPE_2011-2020_co2_120m.rds')
   OPE_co2_newL2$sampling_datetime <- as.POSIXct(OPE_co2_newL2$sampling_datetime, format="%Y-%m-%d %H:%M:%OS", tz="GMT")
   OPE_co2_newL2 <- OPE_co2_newL2[OPE_co2_newL2$sampling_datetime >= "2019-05-01",]
   OPE_co2_newL2 <- OPE_co2_newL2[,c(1,2)]
