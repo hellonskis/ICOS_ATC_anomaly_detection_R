@@ -1,4 +1,6 @@
 # ICOS_ATC_anomaly_detection
+![image](https://user-images.githubusercontent.com/45566769/112658959-37d47680-8e54-11eb-8942-2ddede137695.png)
+
 
 # The R code in the file OPE_2011-2020 can be used for extracting synoptic scale and seasonal anomalies from ICOS CO2 time series. OPE is used as an example, but any ICOS station can be used provided the user has downloaded the historical data from the ICOS carbon portal and the NRT growing data for the past year. The code will concatenate these datasets into one file, and then apply the CCGvu package (Thoning et al., 1989) to extract a harmonic fit to the data, a polynomial function, and a smooth curve defined as the polynomial plus a short-term residual filter.  The difference between the smooth curve and the harmonic is stored as delta-C.
 
